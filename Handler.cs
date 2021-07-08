@@ -421,7 +421,6 @@ namespace Ovning5
         }
         */
 
-
         public void SearcVehicleshByType()
         {
             Garage<Vehicle> gar = new Garage<Vehicle>();
