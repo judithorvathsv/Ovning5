@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ovning5
 {
-   public class IVehicle
+   public interface IVehicle
     {
+       
         public string RegistrationNumber { get; set; }
         public string Color { get; set; }
         public int NumberOfWheels { get; set; }

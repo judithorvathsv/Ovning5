@@ -1,555 +1,221 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using System.Dynamic;
 
 
 namespace Ovning5
-{
- public class Handler : IHandler
+{ 
+    public class Handler : IHandler
+    {
+        public static List<IVehicle> VehicleList = new();    
 
-    {    
 
-   
-        
-        public static int  GiveCapacityToGarageFromUI() {
-            UI ui = new UI();
-            return ui.capacityIntInput;  /////////////////////////////////////////////////////////////////////////////////////////*******************************
+        public bool CheckCapacityInTheGarageSendingToUI()
+        {
+            Console.WriteLine("Garage occupied places: " + Garage<IVehicle>.MyVehiclesInGarage.Length);
+            Console.WriteLine("Garage all places: " + Garage<IVehicle>.Capacity);
+
+            Garage<IVehicle>.CountFreePlacesInTheGarage();
+            if (Garage<IVehicle>.CountFreePlacesInTheGarage() <= 0)
+            {
+                Console.WriteLine("Garage is FULL. ");
+                return true;
+            }
+            else
+            {
+                Console.WriteLine($"Free places: {Garage<IVehicle>.CountFreePlacesInTheGarage()} ");
+                return false;
+            }
         }
 
 
-
-
-
-
-        /*
-        //create array: from list within Handler -> for the Garage in Handler.     
-        public  static Vehicle[] MakeTheListToArray() {                              //ooooooooooooooooooooooooooooooooooooooooooooooooo STTATICBOL SIMAT CSINALTAM  mukodik 07.08.17:32
-            Vehicle[] handlerVehiclesArray = UI.VehicleList.ToArray(); /////////////////////////////////////////////////////////////////////////////////////////*******************
+        //UI VehicleList after adding items should be changed to array for Garage:
+        public IVehicle[] MakeTheListToArray()
+        {
+            IVehicle[] handlerVehiclesArray = VehicleList.ToArray();
             return handlerVehiclesArray;
         }
-        */
-        //create array: from list within Handler -> for the Garage in Handler.     
 
-
-        public Vehicle[] MakeTheListToArray()
-        {                              //ooooooooooooooooooooooooooooooooooooooooooooooooo STTATICBOL SIMAT CSINALTAM  mukodik 07.08.17:32
-            Vehicle[] handlerVehiclesArray = UI.VehicleList.ToArray(); /////////////////////////////////////////////////////////////////////////////////////////*******************
-            return handlerVehiclesArray;
-        }
-
-
-
-
-
-        /// ////////////////////////////////////////////////////////////STATICBOL SIMA  hANDLERBEN Mukodik.07.08.17:57
-
-        //Get array of vehicles from Garage then list out the those:
-        /*
-        public static void ListTheVehiclesInTheGarage()    {
-            Console.WriteLine("---Vehicles in the garage:---");
-            foreach (Vehicle item in Garage<Vehicle>.MyVehiclesInGarage)            
-                Console.WriteLine(item);        
-        }
-        */
 
         //Get array of vehicles from Garage then list out the those:       
         public void ListTheVehiclesInTheGarage()
         {
-            Console.WriteLine("---Vehicles in the garage:---");
-            foreach (Vehicle item in Garage<Vehicle>.MyVehiclesInGarage)
+            foreach (IVehicle item in Garage<IVehicle>.MyVehiclesInGarage)
                 Console.WriteLine(item);
         }
 
 
-
-
-
-
-        /*
-        //Search in the Garage array to find the vehicle that we would be send out, list out the vehicle, then list out the new Garage list:
-        public static void FindTheCarToSendOutFromTheGarage(Garage<Vehicle> MyVehiclesInGarage) {
-            Console.WriteLine("---Sending out vehicle:---");
-
-            string deletableRegNumber= UI.AskSendOutAVehicleFromTheGarage();            /////////////////////////////////////////////////////////////////////////////////////////******
-            var deletingCar = MyVehiclesInGarage.Where(c => c.RegistrationNumber.Equals(deletableRegNumber)).ToList();
-        
-            foreach (var item in deletingCar)
-            {
-                Console.WriteLine("The vehicle which will leave the garage:");
-                Console.WriteLine(item); 
-              
-            }        
-            // deleting car from the garage:
-            foreach (var item in deletingCar)
-            {
-                UI.VehicleList.Remove(item); /////////////////////////////////////////////////////////////////////////////////////////*********************************
-            }      
-                      
-            Console.WriteLine();
-
-            //print out the garage after deleting:
-            IHandler h = new Handler();
-                h.ListTheVehiclesInTheGarage(); ////////////////////////////////////////////mivel fent staticbol sima lett itt a handletben.
-        }
-        */
-
-
-        //Search in the Garage array to find the vehicle that we would be send out, list out the vehicle, then list out the new Garage list:
-        public void FindTheCarToSendOutFromTheGarage(Garage<Vehicle> MyVehiclesInGarage)   //////////////////////////////simat csinaltam belole a Handlerben.
+        //Search in the Garage array to find the vehicle that we would be send out, delete vehicle:
+        public List<IVehicle> FindTheCarToSendOutFromTheGarage(Garage<IVehicle> MyVehiclesInGarage)
         {
-            Console.WriteLine("---Sending out vehicle:---");
-
-            string deletableRegNumber = UI.AskSendOutAVehicleFromTheGarage();            /////////////////////////////////////////////////////////////////////////////////////////******
+            IUI ui = new UI();
+            string deletableRegNumber = ui.AskSendOutAVehicleFromTheGarage();
             var deletingCar = MyVehiclesInGarage.Where(c => c.RegistrationNumber.Equals(deletableRegNumber)).ToList();
 
             foreach (var item in deletingCar)
-            {
-                Console.WriteLine("The vehicle which will leave the garage:");
-                Console.WriteLine(item);
-
-            }
-            // deleting car from the garage:
-            foreach (var item in deletingCar)
-            {
-                UI.VehicleList.Remove(item); /////////////////////////////////////////////////////////////////////////////////////////*********************************
-            }
-
-            Console.WriteLine();
-
-            //print out the garage after deleting:
-            IHandler h = new Handler();
-            h.ListTheVehiclesInTheGarage(); ////////////////////////////////////////////mivel fent staticbol sima lett itt a handletben.
+                VehicleList.Remove(item);
+            return deletingCar;
         }
 
 
-
-        /*  ////////////////////////////////////////////////////////////////////////////////////////////ebbol simat csinalok a Handlerben 
-        public static void FindVehicleWithRegNUmber(Garage<Vehicle> MyVehiclesInGarage) {
-            Console.WriteLine("\n---Finding vehicle by registration number:---");
-            string SearchForRegNumber = UI.AskSendOutAVehicleFromTheGarage(); /////////////////////////////////////////////////////////////////////////////////////////*********
-            var searchedVehicle = MyVehiclesInGarage.Where(c => c.RegistrationNumber.Equals(SearchForRegNumber)).ToList();
-  
-            foreach (var item in searchedVehicle)
-            {
-                Console.WriteLine(item);
-            }  
-        }
-        */
-
-        public void FindVehicleWithRegNUmber(Garage<Vehicle> MyVehiclesInGarage)
+        //Find a vehicle by registration number:
+        public void FindVehicleWithRegNUmber(Garage<IVehicle> MyVehiclesInGarage)
         {
-            Console.WriteLine("\n---Finding vehicle by registration number:---");
-            string SearchForRegNumber = UI.AskSendOutAVehicleFromTheGarage(); /////////////////////////////////////////////////////////////////////////////////////////*********
+            IUI ui = new UI();
+            string SearchForRegNumber = ui.AskSendOutAVehicleFromTheGarage();
             var searchedVehicle = MyVehiclesInGarage.Where(c => c.RegistrationNumber.Equals(SearchForRegNumber)).ToList();
 
             foreach (var item in searchedVehicle)
-            {
                 Console.WriteLine(item);
-            }
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*  //////////////////////////////////////////////////////////////////////////staticbol sima Handlerben.
-
-        public static void FindVehicleTypes(Garage<Vehicle> MyVehiclesInGarage) {
-            Console.WriteLine("\n---Finding vehicle types:---");
-            
-            var allVehicles = from v in MyVehiclesInGarage
-                         group v by v.GetType().Name into garage
-                         select new {Type = garage.Key, Number = garage.Count() } ;     
-
-            foreach (var item in allVehicles)
-            {
-                Console.WriteLine(item.ToString().Substring(2,item.ToString().Length-3));
-            }
-        }
-        */
-
-        public void FindVehicleTypes(Garage<Vehicle> MyVehiclesInGarage)
+        //Search for all types and how many are in the garage:
+        public void FindVehicleTypes(Garage<IVehicle> MyVehiclesInGarage)
         {
-            Console.WriteLine("\n---Finding vehicle types:---");
-
             var allVehicles = from v in MyVehiclesInGarage
                               group v by v.GetType().Name into garage
                               select new { Type = garage.Key, Number = garage.Count() };
 
             foreach (var item in allVehicles)
-            {
                 Console.WriteLine(item.ToString().Substring(2, item.ToString().Length - 3));
-            }
         }
 
 
-
-
-        /* ///////////////////////////////////////////////////////////////////////////////////ezekbol staticok simat csinalok es a bennuk levo UI.searced...-bol is sima lesz.
-        private static List<Vehicle> FindVehicleByWheels(Garage<Vehicle> MyVehiclesInGarage) {           
-            List<Vehicle> findWheels;
-            int wheels = UI.SearchedWheels(); /////////////////////////////////////////////////////////////////////////////////////////**********************
-            if (wheels > 0) 
-            return findWheels = MyVehiclesInGarage.Select(g => g).Where(v=>v.NumberOfWheels.Equals(wheels)).ToList();            
-            else if (wheels == 0)  
-              return  findWheels = MyVehiclesInGarage.Select(g => g).ToList();            
-          else return findWheels = MyVehiclesInGarage.Select(g => g).ToList();
-        }
-
-      
-
-
-        private static List<Vehicle> FindVehicleByColor(Garage<Vehicle> MyVehiclesInGarage)
+        //filtering vehicles by wheel:
+        private List<IVehicle> FindVehicleByWheels(Garage<IVehicle> MyVehiclesInGarage)
         {
-            List<Vehicle> findColor;
-            string color = UI.SearchedColor();     /////////////////////////////////////////////////////////////////////////////////////////*****************
-            if (!color.Equals("c") && !color.Equals("C"))
-            {
-                 findColor = MyVehiclesInGarage.Select(g => g).Where(v => v.Color.Equals(color)).ToList();                    
-            }
-            else
-            {
-                 findColor = MyVehiclesInGarage.Select(g => g).ToList();                          
-            }            
-            return findColor;
-        }
-
-
-
-        private static List<Vehicle> FindVehicleByType(Garage<Vehicle> MyVehiclesInGarage)
-        {
-            List<Vehicle> findType;
-            string type = UI.SearchedType();          /////////////////////////////////////////////////////////////////////////////////////////**************
-            if (!type.Equals("v") && !type.Equals("V"))
-            {
-                 findType = MyVehiclesInGarage.Select(g => g).Where(v => v.GetType().Name.Equals(type, StringComparison.InvariantCultureIgnoreCase)).ToList();          
-            }
-            else
-            {
-                 findType = MyVehiclesInGarage.Select(g => g).ToList();          
-            }
-            return findType;
-        }
-        */
-
-        private List<Vehicle> FindVehicleByWheels(Garage<Vehicle> MyVehiclesInGarage)
-        {
-            List<Vehicle> findWheels;
             IUI ui = new UI();
-            int wheels = ui.SearchedWheels(); /////////////////////////////////////////////////////////////////////////////////////////**********************
-            if (wheels > 0)
-                return findWheels = MyVehiclesInGarage.Select(g => g).Where(v => v.NumberOfWheels.Equals(wheels)).ToList();
-            else if (wheels == 0)
-                return findWheels = MyVehiclesInGarage.Select(g => g).ToList();
-            else return findWheels = MyVehiclesInGarage.Select(g => g).ToList();
+            string wheels = ui.SearchedWheels();
+            int intWheel;
+            bool IsIntWheel = int.TryParse(wheels, out intWheel);
+
+            if (IsIntWheel && (intWheel > 0))
+                return MyVehiclesInGarage.Select(g => g).Where(v => v.NumberOfWheels.Equals(intWheel)).ToList();
+
+            else if (IsIntWheel && (intWheel == 0))
+                return MyVehiclesInGarage.Select(g => g).Where(v => v.NumberOfWheels.Equals(0)).ToList();
+
+            else return MyVehiclesInGarage.Select(g => g).ToList();
         }
 
 
-
-
-        private List<Vehicle> FindVehicleByColor(Garage<Vehicle> MyVehiclesInGarage)
+        //filtering vehicles by color:
+        private List<IVehicle> FindVehicleByColor(Garage<IVehicle> MyVehiclesInGarage)
         {
-            List<Vehicle> findColor;
+            List<IVehicle> findColor;
             IUI ui = new UI();
-            string color = ui.SearchedColor();     /////////////////////////////////////////////////////////////////////////////////////////*****************
+            string color = ui.SearchedColor();
             if (!color.Equals("c") && !color.Equals("C"))
-            {
                 findColor = MyVehiclesInGarage.Select(g => g).Where(v => v.Color.Equals(color)).ToList();
-            }
             else
-            {
                 findColor = MyVehiclesInGarage.Select(g => g).ToList();
-            }
             return findColor;
         }
 
-
-
-        private List<Vehicle> FindVehicleByType(Garage<Vehicle> MyVehiclesInGarage)
+        //filtering vehicles by type:
+        private List<IVehicle> FindVehicleByType(Garage<IVehicle> MyVehiclesInGarage)
         {
-            List<Vehicle> findType;
+            List<IVehicle> findType;
             IUI ui = new UI();
-            string type = ui.SearchedType();          /////////////////////////////////////////////////////////////////////////////////////////**************
+            string type = ui.SearchedType();
             if (!type.Equals("v") && !type.Equals("V"))
-            {
                 findType = MyVehiclesInGarage.Select(g => g).Where(v => v.GetType().Name.Equals(type, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            }
             else
-            {
                 findType = MyVehiclesInGarage.Select(g => g).ToList();
-            }
             return findType;
         }
 
 
-
-
-
-
-        /*  ///////////////////////////////////////////////////////////////////ezekbol staticbol simat csinalok Handlerben. 
-        public static void SearcVehicleshByType()
+        //give vehicle list according to type->color->wheel
+        public List<IVehicle> ListtypeAndColorAndWheel()
         {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            string secondInputToType;
-            do
-            {
-                Console.WriteLine("Choose second parameter: 1: color, 2: number of wheels");
-                secondInputToType = UI.CorrectInput(); /////////////////////////////////////////////////////////////////////////////////////////********************************
-
-                if (secondInputToType == "1")
-                { // color                       
-
-                    var typeAndColorAndWheel = new List<Vehicle>();
-                    typeAndColorAndWheel = FindVehicleByType(gar).ToList()
+            Garage<IVehicle> gar = new();
+            var typeAndColorAndWheel = FindVehicleByType(gar).ToList()
                         .Intersect(FindVehicleByColor(gar).ToList())
                         .Intersect(FindVehicleByWheels(gar).ToList()).ToList();
-
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in typeAndColorAndWheel)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else if (secondInputToType == "2") //wheel
-                {
-                    var typeAndWheelAndColor = new List<Vehicle>();
-                    typeAndWheelAndColor = FindVehicleByType(gar).ToList()
-                        .Intersect(FindVehicleByWheels(gar).ToList())
-                        .Intersect(FindVehicleByColor(gar).ToList()).ToList();
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in typeAndWheelAndColor)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else Console.WriteLine("Wrong input.");
-            } while (secondInputToType != "1" && secondInputToType != "2");
+            return typeAndColorAndWheel;
         }
 
 
-        public static void SearcVehicleshByColor()
+        //give vehicle list according to type->wheel->color
+        public List<IVehicle> ListtypeAndWheelAndColor()
         {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            string secondInputToColor;
-            do
-            {
-                Console.WriteLine("Choose parameter: 1: type, 2: number of wheels");
-                secondInputToColor = UI.CorrectInput(); /////////////////////////////////////////////////////////////////////////////////////////**************************
-                if (secondInputToColor == "1") //type
-                {
-                    var colorAndTypeAndWheels = new List<Vehicle>();
-                    colorAndTypeAndWheels = FindVehicleByColor(gar).ToList()
+            Garage<IVehicle> gar = new();
+            var typeAndWheelAndColor = FindVehicleByType(gar).ToList()
+                         .Intersect(FindVehicleByWheels(gar).ToList())
+                         .Intersect(FindVehicleByColor(gar).ToList()).ToList();
+            return typeAndWheelAndColor;
+        }
+
+
+        //give vehicle list according to color->type->wheel
+        public List<IVehicle> ListcolorAndTypeAndWheels()
+        {
+            Garage<IVehicle> gar = new();
+            var colorAndTypeAndWheels = FindVehicleByColor(gar).ToList()
                         .Intersect(FindVehicleByType(gar).ToList())
                         .Intersect(FindVehicleByWheels(gar).ToList()).ToList();
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in colorAndTypeAndWheels)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else if (secondInputToColor == "2") //wheel
-                {
-                    var colorAndWheelAndType = new List<Vehicle>();
-                    colorAndWheelAndType = FindVehicleByColor(gar).ToList()
-                        .Intersect(FindVehicleByWheels(gar).ToList())
-                        .Intersect(FindVehicleByType(gar).ToList()).ToList();
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in colorAndWheelAndType)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else Console.WriteLine("Wrong input.");
-            } while (secondInputToColor != "1" && secondInputToColor != "2");
+            return colorAndTypeAndWheels;
         }
 
-
-        public static void SearcVehicleshByWheels()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            string secondInputToWheel;
-            do
-            {
-                Console.WriteLine("Choose parameter: 1: type, 2: color");
-                secondInputToWheel = UI.CorrectInput(); //////////////////////////////////////////////////////////////////*******************************
-                if (secondInputToWheel == "1") //type
-                {
-                    var wheelAndTypeAndColor = new List<Vehicle>();
-                    wheelAndTypeAndColor = FindVehicleByWheels(gar).ToList()
-                        .Intersect(FindVehicleByType(gar).ToList())
-                        .Intersect(FindVehicleByColor(gar).ToList()).ToList();
-
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in wheelAndTypeAndColor)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else if (secondInputToWheel == "2") //color
-                {
-                    var wheelAndColorAndType = new List<Vehicle>();
-                    wheelAndColorAndType = FindVehicleByWheels(gar).ToList()
-                        .Intersect(FindVehicleByColor(gar).ToList())
-                        .Intersect(FindVehicleByType(gar).ToList()).ToList();
-
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in wheelAndColorAndType)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else Console.WriteLine("Wrong input.");
-            } while (secondInputToWheel != "1" && secondInputToWheel != "2");
-        }
-        */
-
-        public void SearcVehicleshByType()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            string secondInputToType;
-            do
-            {
-                Console.WriteLine("Choose second parameter: 1: color, 2: number of wheels");
-                IUI ui = new UI();
-                secondInputToType = ui.CorrectInput(); /////////////////////////////////////////////////////////////////////////////////////////********************************
-
-                if (secondInputToType == "1")
-                { // color                       
-
-                    var typeAndColorAndWheel = new List<Vehicle>();
-                    typeAndColorAndWheel = FindVehicleByType(gar).ToList()
-                        .Intersect(FindVehicleByColor(gar).ToList())
-                        .Intersect(FindVehicleByWheels(gar).ToList()).ToList();
-
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in typeAndColorAndWheel)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else if (secondInputToType == "2") //wheel
-                {
-                    var typeAndWheelAndColor = new List<Vehicle>();
-                    typeAndWheelAndColor = FindVehicleByType(gar).ToList()
-                        .Intersect(FindVehicleByWheels(gar).ToList())
-                        .Intersect(FindVehicleByColor(gar).ToList()).ToList();
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in typeAndWheelAndColor)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else Console.WriteLine("Wrong input.");
-            } while (secondInputToType != "1" && secondInputToType != "2");
-        }
-
-
-        public void SearcVehicleshByColor()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            string secondInputToColor;
-            do
-            {
-                Console.WriteLine("Choose parameter: 1: type, 2: number of wheels");
-                IUI ui = new UI();
-                secondInputToColor = ui.CorrectInput(); /////////////////////////////////////////////////////////////////////////////////////////**************************
-                if (secondInputToColor == "1") //type
-                {
-                    var colorAndTypeAndWheels = new List<Vehicle>();
-                    colorAndTypeAndWheels = FindVehicleByColor(gar).ToList()
-                        .Intersect(FindVehicleByType(gar).ToList())
-                        .Intersect(FindVehicleByWheels(gar).ToList()).ToList();
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in colorAndTypeAndWheels)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else if (secondInputToColor == "2") //wheel
-                {
-                    var colorAndWheelAndType = new List<Vehicle>();
-                    colorAndWheelAndType = FindVehicleByColor(gar).ToList()
-                        .Intersect(FindVehicleByWheels(gar).ToList())
-                        .Intersect(FindVehicleByType(gar).ToList()).ToList();
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in colorAndWheelAndType)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else Console.WriteLine("Wrong input.");
-            } while (secondInputToColor != "1" && secondInputToColor != "2");
-        }
-
-
-        public void SearcVehicleshByWheels()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            string secondInputToWheel;
-            do
-            {
-                Console.WriteLine("Choose parameter: 1: type, 2: color");
-                IUI ui = new UI();
-                secondInputToWheel = ui.CorrectInput(); //////////////////////////////////////////////////////////////////*******************************
-                if (secondInputToWheel == "1") //type
-                {
-                    var wheelAndTypeAndColor = new List<Vehicle>();
-                    wheelAndTypeAndColor = FindVehicleByWheels(gar).ToList()
-                        .Intersect(FindVehicleByType(gar).ToList())
-                        .Intersect(FindVehicleByColor(gar).ToList()).ToList();
-
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in wheelAndTypeAndColor)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else if (secondInputToWheel == "2") //color
-                {
-                    var wheelAndColorAndType = new List<Vehicle>();
-                    wheelAndColorAndType = FindVehicleByWheels(gar).ToList()
-                        .Intersect(FindVehicleByColor(gar).ToList())
-                        .Intersect(FindVehicleByType(gar).ToList()).ToList();
-
-                    Console.WriteLine(" \nVehicles: ");
-                    foreach (var item in wheelAndColorAndType)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-                else Console.WriteLine("Wrong input.");
-            } while (secondInputToWheel != "1" && secondInputToWheel != "2");
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-    }
    
+        //give vehicle list according to color->wheel->type
+        public List<IVehicle> ListcolorAndWheelAndType()
+        {
+            Garage<IVehicle> gar = new();
+            var colorAndWheelAndType = FindVehicleByColor(gar).ToList()
+                                .Intersect(FindVehicleByWheels(gar).ToList())
+                                .Intersect(FindVehicleByType(gar).ToList()).ToList();
+            return colorAndWheelAndType;
+        }
+
+
+        //give vehicle list according to wheel->type->color
+        public List<IVehicle> ListwheelAndTypeAndColor()
+        {
+            Garage<IVehicle> gar = new();
+            var wheelAndTypeAndColor = FindVehicleByWheels(gar).ToList()
+                     .Intersect(FindVehicleByType(gar).ToList())
+                     .Intersect(FindVehicleByColor(gar).ToList()).ToList();
+            return wheelAndTypeAndColor;
+        }
+
+
+        //give vehicle list according to wheel->color->type
+        public List<IVehicle> ListwheelAndColorAndType()
+        {
+            Garage<IVehicle> gar = new();
+            var wheelAndColorAndType = FindVehicleByWheels(gar).ToList()
+                  .Intersect(FindVehicleByColor(gar).ToList())
+                  .Intersect(FindVehicleByType(gar).ToList()).ToList();
+            return wheelAndColorAndType;
+        }
+              
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

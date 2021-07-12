@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Dynamic;
 
 namespace Ovning5
 {
@@ -16,63 +21,73 @@ namespace Ovning5
         int cylinderVolume;
         int numberOfSeats;
         string fueltype;
-        int lenght;
-        public static List<Vehicle> VehicleList { get; set; } = new List<Vehicle>();       //******************************************
-        public int capacityIntInput { get ; set ; }                     //*********************************
-
-       // public int capacityIntInput;
+        int lenght;       
+        public int CapacityIntInput { get ; set ; }               
         public int freeCapacity;
 
 
         private void Initializing()
-        {
-            //23
-            VehicleList.Add(new Airplane { NumberOfEngines = 2, RegistrationNumber = "aaa000", Color = "red" });
-            VehicleList.Add(new Airplane { NumberOfEngines = 2, RegistrationNumber = "Aaa000", Color = "red" });
-            VehicleList.Add(new Airplane { NumberOfEngines = 4, RegistrationNumber = "aaa001", Color = "red" });
-            VehicleList.Add(new Airplane { NumberOfEngines = 4, RegistrationNumber = "aaa002", Color = "blue" });
+        {                                                                                           
+            //23   
+            Handler.VehicleList.Add(new Airplane { NumberOfEngines = 2, RegistrationNumber = "aaa000", Color = "red" });
+            Handler.VehicleList.Add(new Airplane { NumberOfEngines = 2, RegistrationNumber = "Aaa000", Color = "red" });
+            Handler.VehicleList.Add(new Airplane { NumberOfEngines = 4, RegistrationNumber = "aaa001", Color = "red" });
+            Handler.VehicleList.Add(new Airplane { NumberOfEngines = 4, RegistrationNumber = "aaa002", Color = "blue" });
 
-            VehicleList.Add(new Boat { CylinderVolume = 300, RegistrationNumber = "aaA000", Color = "red" });
-            VehicleList.Add(new Boat { CylinderVolume = 400, RegistrationNumber = "aAa000", Color = "blue" });
-            VehicleList.Add(new Boat { CylinderVolume = 300, RegistrationNumber = "aaa003", Color = "yellow" });
-            VehicleList.Add(new Boat { CylinderVolume = 400, RegistrationNumber = "aaa004", Color = "black" });
+            Handler.VehicleList.Add(new Boat { CylinderVolume = 300, RegistrationNumber = "aaA000", Color = "red" });
+            Handler.VehicleList.Add(new Boat { CylinderVolume = 400, RegistrationNumber = "aAa000", Color = "blue" });
+            Handler.VehicleList.Add(new Boat { CylinderVolume = 300, RegistrationNumber = "aaa003", Color = "yellow" });
+            Handler.VehicleList.Add(new Boat { CylinderVolume = 400, RegistrationNumber = "aaa004", Color = "black" });
 
-            VehicleList.Add(new Bus { NumberOfSeats = 50, RegistrationNumber = "aaa050", Color = "blue" });
-            VehicleList.Add(new Bus { NumberOfSeats = 56, RegistrationNumber = "aaa060", Color = "red" });
-            VehicleList.Add(new Bus { NumberOfSeats = 72, RegistrationNumber = "aaa005", Color = "red" });
-            VehicleList.Add(new Bus { NumberOfSeats = 56, RegistrationNumber = "aaa006", Color = "red" });
+            Handler.VehicleList.Add(new Bus { NumberOfSeats = 50, RegistrationNumber = "aaa050", Color = "blue" });
+            Handler.VehicleList.Add(new Bus { NumberOfSeats = 56, RegistrationNumber = "aaa060", Color = "red" });
+            Handler.VehicleList.Add(new Bus { NumberOfSeats = 72, RegistrationNumber = "aaa005", Color = "red" });
+            Handler.VehicleList.Add(new Bus { NumberOfSeats = 56, RegistrationNumber = "aaa006", Color = "red" });
 
-            VehicleList.Add(new Car { Fueltype = "bensin", RegistrationNumber = "aaa700", Color = "red" });
-            VehicleList.Add(new Car { Fueltype = "diesel", RegistrationNumber = "aaa007", Color = "black" });
-            VehicleList.Add(new Car { Fueltype = "bensin", RegistrationNumber = "aaa008", Color = "red" });
-            VehicleList.Add(new Car { Fueltype = "diesel", RegistrationNumber = "aaa009", Color = "white" });
+            Handler.VehicleList.Add(new Car { Fueltype = "bensin", RegistrationNumber = "aaa700", Color = "red" });
+            Handler.VehicleList.Add(new Car { Fueltype = "diesel", RegistrationNumber = "aaa007", Color = "black" });
+            Handler.VehicleList.Add(new Car { Fueltype = "bensin", RegistrationNumber = "aaa008", Color = "red" });
+            Handler.VehicleList.Add(new Car { Fueltype = "diesel", RegistrationNumber = "aaa009", Color = "white" });
 
-            VehicleList.Add(new Motorcycle { Lenght = 172, RegistrationNumber = "aaa0010", Color = "red", NumberOfWheels = 2 });
-            VehicleList.Add(new Motorcycle { Lenght = 108, RegistrationNumber = "aaa0011", Color = "blue", NumberOfWheels = 2 });
-            VehicleList.Add(new Motorcycle { Lenght = 108, RegistrationNumber = "aaa0012", Color = "yellow", NumberOfWheels = 3 });
-            VehicleList.Add(new Motorcycle { Lenght = 172, RegistrationNumber = "aaa0013", Color = "black", NumberOfWheels = 2 });
-            VehicleList.Add(new Motorcycle { Lenght = 108, RegistrationNumber = "aaa0014", Color = "black", NumberOfWheels = 3 });
-            VehicleList.Add(new Motorcycle { Lenght = 172, RegistrationNumber = "aaa0015", Color = "black", NumberOfWheels = 2 });
-            VehicleList.Add(new Motorcycle { Lenght = 172, RegistrationNumber = "aaa0016", Color = "black", NumberOfWheels = 2 });
+            Handler.VehicleList.Add(new Motorcycle { Lenght = 172, RegistrationNumber = "aaa0010", Color = "red", NumberOfWheels = 2 });
+            Handler.VehicleList.Add(new Motorcycle { Lenght = 108, RegistrationNumber = "aaa0011", Color = "blue", NumberOfWheels = 2 });
+            Handler.VehicleList.Add(new Motorcycle { Lenght = 108, RegistrationNumber = "aaa0012", Color = "yellow", NumberOfWheels = 3 });
+            Handler.VehicleList.Add(new Motorcycle { Lenght = 172, RegistrationNumber = "aaa0013", Color = "black", NumberOfWheels = 2 });
+            Handler.VehicleList.Add(new Motorcycle { Lenght = 108, RegistrationNumber = "aaa0014", Color = "black", NumberOfWheels = 3 });
+            Handler.VehicleList.Add(new Motorcycle { Lenght = 172, RegistrationNumber = "aaa0015", Color = "black", NumberOfWheels = 2 });
+            Handler.VehicleList.Add(new Motorcycle { Lenght = 172, RegistrationNumber = "aaa0016", Color = "black", NumberOfWheels = 2 });
         }
       
+
         private int GetCapacityToGarage()        {
-            Console.WriteLine("Give capacity to the garage: ");
-            string capacityStringInput = CorrectInput();
-            capacityIntInput = int.Parse(capacityStringInput);
-            return capacityIntInput;
+            do {
+                Console.WriteLine("Give capacity to the garage: ");
+                string capacityStringInput = CorrectInput();
+                CapacityIntInput = int.Parse(capacityStringInput);               
+
+                if (Garage<IVehicle>.MyVehiclesInGarage.Length >= CapacityIntInput)
+                {
+                    Console.WriteLine("There are already vehicles in the garage. \nThe garage capacity has to be bigger than the number of these vehicles.");
+                    Console.WriteLine("Number of vehicles in the garage: "+ Garage<IVehicle>.MyVehiclesInGarage.Length);
+                }      
+            } while (Garage<IVehicle>.MyVehiclesInGarage.Length >= CapacityIntInput);
+          
+            return CapacityIntInput;
         }
 
-           
+              
         public void Menu()  {
-            Console.WriteLine(" *** Garage register *** ");
 
+            // --------Starting items above added here:------------- 
             Initializing();
-            GetCapacityToGarage();
 
+            Console.WriteLine(" *** Garage register *** ");           
+            GetCapacityToGarage();
+            Garage<IVehicle> g = new(CapacityIntInput);
+            
             string input;
             int intInput;
-
+          
             do
             {
             label0:
@@ -92,53 +107,33 @@ namespace Ovning5
                         case 3:
                             SendOutCarFormGarage();
                             break;
-
                         case 4:
                             SearchForVehicle();
                             break;
-
-                        case 5:
+                        case 5:      
                             Environment.Exit(0);
                             break;  
                     }
                 }
                 else goto label0;
 
-            } while (0 < intInput && intInput <= 5);
+            } while (0 < intInput && intInput <= 5); 
         }
 
-        private int CheckCapacity()
-        {
-            UI ui = new UI();
-            Console.WriteLine("Garage occupied places: " + Garage<Vehicle>.MyVehiclesInGarage.Length);
-            Console.WriteLine("Garage all places: " + capacityIntInput);
-            int freeplaces = capacityIntInput - Garage<Vehicle>.MyVehiclesInGarage.Length;
-            if (Garage<Vehicle>.MyVehiclesInGarage.Length >= capacityIntInput)
-            {
-                Console.WriteLine("Garage is FULL. ");
-                return freeCapacity = 1;
-            }
 
-            else 
-            {
-                Console.WriteLine($"Free places: {freeplaces} ");
-                return freeCapacity = 2;
-            }
-        }
-
-        public Vehicle AddVehicleInTheGarage()
-        {        
-                    
+        private void AddVehicleInTheGarage()
+        {                        
                 string inputAddVehicleString;
                 int inputAddVehicleInt;
+
                 do
                 {
-                CheckCapacity();
-                Console.WriteLine("**********************************************");
-                if (freeCapacity == 2)
+                IHandler h = new Handler();
+                if (h.CheckCapacityInTheGarageSendingToUI() == false)
                 {
-
-                    Console.WriteLine("Please choose vehice: \n1: Airplane\n2: Boat\n3: Bus\n4: Car\n5: Motorcycle\n6: Finish to add");
+                    Console.WriteLine("**********************************************");        
+              
+                    Console.WriteLine("Please choose vehice: \n1: Airplane\n2: Boat\n3: Bus\n4: Car\n5: Motorcycle\n6: Finish to add\n");
                     inputAddVehicleString = Console.ReadLine();
                     bool correctInput2 = int.TryParse(inputAddVehicleString, out inputAddVehicleInt);
 
@@ -171,26 +166,23 @@ namespace Ovning5
                             Console.WriteLine("Wrong input. Back to the main menu.");
                             break;
                     }
-
                 }
                 else {                    
                     break;
                 }
             }
-                while (0 < inputAddVehicleInt && inputAddVehicleInt < 6);
-            
-           
-
-            return new Vehicle();
+            while (0 < inputAddVehicleInt && inputAddVehicleInt < 6);
         }
 
-        public void AskBasicInformation()
+
+        private void AskBasicInformation()
         {
             AskRegistrationNumber();
             AskColor();
         }
 
-        public void AskRegistrationNumber()
+
+        private void AskRegistrationNumber()
         {
             string patternRegNumber = @"[^0-9a-zA-Z]";  //letter or number only allowed
             bool isValidRegNumber;
@@ -203,8 +195,8 @@ namespace Ovning5
 
                 if (registrationNumber.Length > 0)
                 {
-                    //only uniq registration number is allowed:
-                    Dictionary<string, Vehicle> myDictionary = VehicleList.ToDictionary(x => x.RegistrationNumber);
+                    //only uniq registration number is allowed:                    
+                    Dictionary<string, IVehicle> myDictionary = Handler.VehicleList.ToDictionary(x => x.RegistrationNumber); 
                     bool keyExists = myDictionary.Keys.OfType<string>().Any(k => string.Equals(k, registrationNumber, StringComparison.InvariantCultureIgnoreCase));
                     if (keyExists)
                     {
@@ -219,10 +211,10 @@ namespace Ovning5
                 }
 
             } while (isValidRegNumber);
-
         }
 
-        public void AskColor()
+
+        private void AskColor()
         {
             string patternColor = @"[^a-zA-Z ]";        //letter only allowed    
             bool isValidColor;
@@ -240,43 +232,44 @@ namespace Ovning5
             } while (isValidColor | emptyColorInput);
         }
 
-        private Vehicle AddAirplane()
+
+        private IVehicle AddAirplane()
         {
             label2:
             Console.WriteLine("Write number of engines");
-        label1:
+            label1:
             string enginesString = Console.ReadLine();
-            int enginesInt;
-            if (int.TryParse(enginesString, out enginesInt)) {
+            if (int.TryParse(enginesString, out int enginesInt))
+            {
                 if (enginesInt > 0)
                     numberOfEngines = enginesInt;
-                else { Console.WriteLine("It has to be bigger than zero.");
+                else
+                {
+                    Console.WriteLine("It has to be bigger than zero.");
                     goto label2;
-                }               
+                }
             }
             else
             {
                 Console.WriteLine("Write a correct input. Use number.");
                 goto label1;
             }
-            Vehicle airplane = new Airplane(numberOfEngines, registrationNumber, color);        
-          
-                Console.WriteLine($"Added: {airplane} is parking.");
-                VehicleList.Add(airplane);
-        
-
+            IVehicle airplane = new Airplane(numberOfEngines, registrationNumber, color);           
+                Console.WriteLine($"Added: {airplane} is parking.");            
+            Handler.VehicleList.Add(airplane);
             return airplane;
         }
 
-        private Vehicle AddBoat()
+
+        private IVehicle AddBoat()
         {
         label2: Console.WriteLine("Write cylinder volume");
             string cylinderVolumeString = Console.ReadLine();
-            int cylinderVolumeInt;
-            if (int.TryParse(cylinderVolumeString, out cylinderVolumeInt))
+            if (int.TryParse(cylinderVolumeString, out int cylinderVolumeInt))
                 if (cylinderVolumeInt > 0)
                     cylinderVolume = cylinderVolumeInt;
-                else {
+                else
+                {
                     Console.WriteLine("It has to be bigger than zero.");
                     goto label2;
                 }
@@ -285,22 +278,18 @@ namespace Ovning5
                 Console.WriteLine("Write a correct input. Use number.");
                 goto label2;
             }
-            Vehicle boat = new Boat(cylinderVolume, registrationNumber, color);
-
-
-            
-                Console.WriteLine($"Added: {boat} is parking.");
-                VehicleList.Add(boat);
-                     
+            IVehicle boat = new Boat(cylinderVolume, registrationNumber, color);
+                Console.WriteLine($"Added: {boat} is parking.");                               
+            Handler.VehicleList.Add(boat);
             return boat;
         }
 
-        private Vehicle AddBus()
+
+        private IVehicle AddBus()
         {
         label3: Console.WriteLine("Write number of seats");
             string numberOfSeatsString = Console.ReadLine();
-            int numberOfSeatsInt;
-            if (int.TryParse(numberOfSeatsString, out numberOfSeatsInt))
+            if (int.TryParse(numberOfSeatsString, out int numberOfSeatsInt))
                 if (numberOfSeatsInt > 0)
                     numberOfSeats = numberOfSeatsInt;
                 else
@@ -313,39 +302,39 @@ namespace Ovning5
                 Console.WriteLine("Write a correct input. Use number.");
                 goto label3;
             }
-            Vehicle bus = new Bus(numberOfSeats, registrationNumber, color);
-            Console.WriteLine($"Added: {bus} is parking.");
-            VehicleList.Add(bus);
+            IVehicle bus = new Bus(numberOfSeats, registrationNumber, color);
+            Console.WriteLine($"Added: {bus} is parking.");           
+            Handler.VehicleList.Add(bus);
             return bus;
         }
 
-        private Vehicle AddCar()
+
+        private IVehicle AddCar()
         {
             Console.WriteLine("Fueltype is gasoline or diesel. Write 1 if the fueltype is gasoline or push anything else for diesel.");
             string fueltypeString = Console.ReadLine();
             if (fueltypeString == "1")
                 fueltype = "gasoline";
             else fueltype = "diesel";
-            Vehicle car = new Car(fueltype, registrationNumber, color);
-            Console.WriteLine($"Added: {car} is parking.");
-            VehicleList.Add(car);
+            IVehicle car = new Car(fueltype, registrationNumber, color);
+            Console.WriteLine($"Added: {car} is parking.");            
+            Handler.VehicleList.Add(car);
             return car;
         }
 
-        private Vehicle AddMotorcycle()
+
+        private IVehicle AddMotorcycle()
         {
         label4: Console.WriteLine("Write number of wheels");
             string numberOfWheelsString = Console.ReadLine();
-            int numberOfWheelsInt;
-            if (int.TryParse(numberOfWheelsString, out numberOfWheelsInt))
+            if (int.TryParse(numberOfWheelsString, out int numberOfWheelsInt))
                 if (numberOfWheelsInt > 0)
                     numberOfWheels = numberOfWheelsInt;
-            else
+                else
                 {
                     Console.WriteLine("It has to be bigger than zero.");
                     goto label4;
                 }
-
             else
             {
                 Console.WriteLine("Write a correct input. Use number.");
@@ -353,8 +342,7 @@ namespace Ovning5
             }
         label5: Console.WriteLine("Write the lenght of the motorcycle");
             string lengthString = Console.ReadLine();
-            int lengthInt;
-            if (int.TryParse(lengthString, out lengthInt))
+            if (int.TryParse(lengthString, out int lengthInt))
                 if (lengthInt > 0)
                     lenght = lengthInt;
                 else
@@ -362,101 +350,92 @@ namespace Ovning5
                     Console.WriteLine("It has to be bigger than zero.");
                     goto label5;
                 }
-
             else
             {
                 Console.WriteLine("Write a correct input. Use number.");
                 goto label5;
             }
-            Vehicle motorcycle = new Motorcycle(lenght, registrationNumber, color, numberOfWheels);
-            Console.WriteLine($"Added: {motorcycle} is parking.");
-            VehicleList.Add(motorcycle);
+            IVehicle motorcycle = new Motorcycle(lenght, registrationNumber, color, numberOfWheels);
+            Console.WriteLine($"Added: {motorcycle} is parking.");           
+           Handler.VehicleList.Add(motorcycle);
             return motorcycle;
         }
 
-
-        /*                   ///////////////////ebbol a staticbol sima lesz UI-ban. 
-        public static void ListOutTheVehiclesInTheGarage()
+     
+        private void ListOutTheVehiclesInTheGarage()
         {
-            IHandler h = new Handler();      /////////////////////////////////////////staticbol sima lett a handlerben.   Mukodik.07.08.17:57
-            h.ListTheVehiclesInTheGarage();
-        }
-        */
-        public void ListOutTheVehiclesInTheGarage()
-        {
-            IHandler h = new Handler();      /////////////////////////////////////////staticbol sima lett a handlerben.   Mukodik.07.08.17:57
+            IHandler h = new Handler();
+            Console.WriteLine("---Vehicles in the garage:---");
             h.ListTheVehiclesInTheGarage();
         }
 
 
-
-        public static string AskSendOutAVehicleFromTheGarage()
+        public string AskSendOutAVehicleFromTheGarage()  
         {
             string deletingVehicleRegNumber;
             string patternRegNumber = @"[^0-9a-zA-Z]";  //letter or number only allowed
             bool isValidRegNumber;
             bool emptyRegNumberInput;
             bool keyExists;
-            Dictionary<string, Vehicle> myVehicleREgNumberDictionary = VehicleList.ToDictionary(x => x.RegistrationNumber);
+           
+            Dictionary<string, IVehicle> myVehicleREgNumberDictionary = Handler.VehicleList.ToDictionary(x => x.RegistrationNumber);
             do
             {
                 Console.WriteLine("Which vehicle you want to get from the garage? \nPlease write the registration number:");
                 deletingVehicleRegNumber = Console.ReadLine();
-
 
                 isValidRegNumber = Regex.IsMatch(deletingVehicleRegNumber, patternRegNumber);
                 emptyRegNumberInput = string.IsNullOrEmpty(deletingVehicleRegNumber.Trim());               
                 keyExists = myVehicleREgNumberDictionary.Keys.OfType<string>().Any(k => string.Equals(k, deletingVehicleRegNumber, StringComparison.InvariantCultureIgnoreCase));
 
                 //valid input, only letter and number allowed:
-                if (isValidRegNumber)
-                {
-                    Console.WriteLine("Wrong input. Only number bigger than zero and letter are allowed. \n");
-                }
+                if (isValidRegNumber)                
+                    Console.WriteLine("Wrong input. Only number bigger than zero and letter are allowed. \n");                
 
                 //not empty input allowed:                
                 else if (emptyRegNumberInput)
                     Console.WriteLine("Registrering number cannot be empty!");
 
                 //searched registr. number should be in the garage:               
-                else if (!keyExists)
-                {
-                    Console.WriteLine("Wrong input! There is no same registration number in the system.");
-                }
+                else if (!keyExists)                
+                    Console.WriteLine("Wrong input! There is no same registration number in the system.");                
 
             } while (isValidRegNumber | emptyRegNumberInput);
 
             if (keyExists)
                 return deletingVehicleRegNumber;
             else return deletingVehicleRegNumber=null;
-        }  //******************************************************************
+        }  
 
-
-
-        /*    //////////////////////////////ebbol simat csinalok itt az UI-ban
-        public static void SendOutCarFormGarage()
+               
+        private void SendOutCarFormGarage()
         {
-            Garage<Vehicle> gar = new Garage<Vehicle>();  ////////////////////////////////////////////////////// Handlerben lett sima 
+            Garage<IVehicle> gar = new();   
             IHandler h = new Handler();
-            h.FindTheCarToSendOutFromTheGarage(gar);
-        }
-        */
-        public void SendOutCarFormGarage()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();  ////////////////////////////////////////////////////// Handlerben lett sima 
-            IHandler h = new Handler();
-            h.FindTheCarToSendOutFromTheGarage(gar);
+
+            Console.WriteLine("---Sending out vehicle:---");
+            
+            //listing car which will be deleted:
+            foreach (var item in h.FindTheCarToSendOutFromTheGarage(gar))
+            {
+                Console.WriteLine();
+                Console.WriteLine("The vehicle which will leave the garage:");             
+                Console.WriteLine(item);
+            }
+            Console.WriteLine();
+            Console.WriteLine("Vehicles in the garage after sending out:");
+            h.ListTheVehiclesInTheGarage();
         }
 
 
-        public void SearchForVehicle()
+        private void SearchForVehicle()
         {
             string inputString;
             int inputInt;
             do
             {
             label:
-                Console.WriteLine("\nMenu:\n1: Find a vehicle with registration number\n2: Get vehicle types and how many vehicles are in a type\n3: Find a vehicle/vehicles by type, color and number of wheels\n4: Quit to the main menu");
+                Console.WriteLine("\nMenu:\n1: Find a vehicle with registration number\n2: Get vehicle types and how many vehicles are in a type\n3: Find a vehicle/vehicles by type, color and number of wheels\n4: Quit to the main menu\n");
                 inputString = Console.ReadLine();
                 bool correctInput = int.TryParse(inputString, out inputInt);             
                                 
@@ -481,69 +460,46 @@ namespace Ovning5
                 else {
                     Console.WriteLine("Wrong input. Enter a number between 1 and 4.");
                     goto label;
-                }
-               
+                }               
             } while (0 < inputInt && inputInt <= 3);
+        }
+                  
+
+        private void GetVehicleByRegNumber()   
+        {
+            Console.WriteLine("\n---Finding vehicle by registration number:---");
+            Garage<IVehicle> gar = new();
+            IHandler h = new Handler();      
+            h.FindVehicleWithRegNUmber(gar);
+        }
+
+
+        private void VehicleTypesWithNumberOfVehicles()
+        {
+            Console.WriteLine("\n---Finding vehicle types:---");
+            Garage<IVehicle> gar = new();
+            IHandler h = new Handler();
+            h.FindVehicleTypes(gar);
         }
 
        
-        /*//////////////////////////////////////////////////////////////////////////////////////////////////staticbol simat csinalok UI ban. Mukodik 07.08.18:26
-        public static void GetVehicleByRegNumber()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            IHandler h = new Handler();
-            h.FindVehicleWithRegNUmber(gar);
-        }
-        */
-
-        public void GetVehicleByRegNumber()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            IHandler h = new Handler();
-            h.FindVehicleWithRegNUmber(gar);
-        }
-
-
-
-        
-
-        /*  ///////////////////////////////////////////////////////////////////////////////////staticbol sima 07.08.18:30
-        public static void VehicleTypesWithNumberOfVehicles()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            IHandler h = new Handler();
-            h.FindVehicleTypes(gar);
-        }
-        */
-
-        public void VehicleTypesWithNumberOfVehicles()
-        {
-            Garage<Vehicle> gar = new Garage<Vehicle>();
-            IHandler h = new Handler();
-            h.FindVehicleTypes(gar);
-        }
-
-
-        //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-        //ebbol simat csinalok//////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public void SearcVehicleshByProperties()
+        private void SearcVehicleshByProperties()
         {    
             Console.WriteLine("\n---Searching parameters:---");
 
             string firstInput;
             do {
                 Console.WriteLine("Choose first parameter: 1: type, 2: color, 3: number of wheels");
-                firstInput = CorrectInput();
-                IHandler h = new Handler();
+                firstInput = CorrectInput();                
                 switch (firstInput) {                    
                         case "1": //type                       
-                            h.SearcVehicleshByType();
+                          SearcVehicleshByType();
                             break;
                         case "2": //color                        
-                        h.SearcVehicleshByColor();
+                        SearcVehicleshByColor();
                             break;
                         case "3": //wheels                       
-                        h.SearcVehicleshByWheels();
+                        SearcVehicleshByWheels();
                             break;
                         default:
                         Console.WriteLine("Wrong input.");
@@ -551,94 +507,7 @@ namespace Ovning5
                     }    
             } while (!(firstInput == "1" || firstInput == "2" || firstInput == "3"));
         }
-
-
-        /* ////////////////////////////////////////////////////////ezekbol staticok simat csinalok UI-ben. 
-          public static string SearchedType()
-          {
-              string type;
-              bool emptyTypeInput;
-              bool keyExistsForType;
-
-              do
-              {
-                  Console.WriteLine("Write the type of the vehicle, or for all vehicle enter V:");
-                  type = Console.ReadLine();
-                  emptyTypeInput = string.IsNullOrEmpty(type.Trim());
-
-                  //looking for the types we already have in the garage:
-                  Dictionary<string, List<Vehicle>> resultDictionary = (from sample in VehicleList group sample by sample.GetType().Name).ToDictionary(g => g.Key, g => g.ToList());
-                  keyExistsForType = resultDictionary.Keys.Any(k => string.Equals(k, type, StringComparison.InvariantCultureIgnoreCase));
-
-                  if (emptyTypeInput)
-                      Console.WriteLine("Type cannot be empty!");
-                  else if (!keyExistsForType && !(type == "v" || type == "V"))
-                      Console.WriteLine("There is no this type in the garage.");
-              }
-              while (emptyTypeInput || (!keyExistsForType && type != "v" && type != "V"));
-              return type;
-          }     //******************************************************************
-
-          public static string SearchedColor()
-          {
-              string color;
-              bool emptyColorInput;
-              bool keyExistsForColor;
-
-              do
-              {
-                  Console.WriteLine("Write the color, or for all color enter C:");
-                  color = Console.ReadLine();
-                  emptyColorInput = string.IsNullOrEmpty(color.Trim());
-
-
-                  //looking for the colors we already have in the garage:
-                  Dictionary<string, List<Vehicle>> resultDictionary = (from sample in VehicleList group sample by sample.Color).ToDictionary(g => g.Key, g => g.ToList());
-                  keyExistsForColor = resultDictionary.Keys.Any(k => string.Equals(k, color, StringComparison.InvariantCultureIgnoreCase));
-
-                  if (emptyColorInput)
-                      Console.WriteLine("Type cannot be empty!");
-                  else if (!keyExistsForColor && !(color == "c" || color == "C"))
-                      Console.WriteLine("There is no this color in the garage.");
-              }
-              while (emptyColorInput || (!keyExistsForColor && color != "c" && color != "C"));
-              return color;
-          }   //******************************************************************
-
-          public static int SearchedWheels()
-          {
-              string wheelsString;
-              bool emptyWheelInput;
-              int wheelsInt;
-              bool validWheelNumber;
-
-              //looking for the number of wheels we already have in the garage:
-              Dictionary<int, List<Vehicle>> resultDictionaryForWheels = (from sample in VehicleList group sample by sample.NumberOfWheels).ToDictionary(g => g.Key, g => g.ToList());
-              bool keyExists;
-
-              do
-              {
-                  Console.WriteLine("Write the number of wheels, or enter 0:");
-                  wheelsString = Console.ReadLine();
-                  emptyWheelInput = string.IsNullOrEmpty(wheelsString.Trim());
-                  validWheelNumber = int.TryParse(wheelsString, out wheelsInt);
-                  keyExists = resultDictionaryForWheels.Keys.OfType<int>().Any(k => int.Equals(k, wheelsInt));
-
-                  if (emptyWheelInput)
-                      Console.WriteLine("Input cannot be empty!");
-
-                  else if (!validWheelNumber)
-                      Console.WriteLine("Write a correct input. Use number.");
-
-                  else if (!keyExists)
-                      Console.WriteLine($"There is no vehicle with {wheelsInt} wheels in the garage.");
-
-              } while (emptyWheelInput || !validWheelNumber || !(keyExists || wheelsString == "0"));
-              return wheelsInt;
-
-          }  //******************************************************************
-
-          */
+               
 
         public string SearchedType()
         {
@@ -652,9 +521,9 @@ namespace Ovning5
                 type = Console.ReadLine();
                 emptyTypeInput = string.IsNullOrEmpty(type.Trim());
 
-                //looking for the types we already have in the garage:
-                Dictionary<string, List<Vehicle>> resultDictionary = (from sample in VehicleList group sample by sample.GetType().Name).ToDictionary(g => g.Key, g => g.ToList());
-                keyExistsForType = resultDictionary.Keys.Any(k => string.Equals(k, type, StringComparison.InvariantCultureIgnoreCase));
+                //looking for the types we already have in the garage:  
+                Dictionary<string, List<IVehicle>> resultDictionary = (from sample in Handler.VehicleList group sample by sample.GetType().Name).ToDictionary(g => g.Key, g => g.ToList());
+                keyExistsForType = resultDictionary.Keys.Any(k => string.Equals(k, type, StringComparison.InvariantCultureIgnoreCase));  
 
                 if (emptyTypeInput)
                     Console.WriteLine("Type cannot be empty!");
@@ -663,7 +532,8 @@ namespace Ovning5
             }
             while (emptyTypeInput || (!keyExistsForType && type != "v" && type != "V"));
             return type;
-        }     //******************************************************************
+        }    
+
 
         public string SearchedColor()
         {
@@ -677,67 +547,148 @@ namespace Ovning5
                 color = Console.ReadLine();
                 emptyColorInput = string.IsNullOrEmpty(color.Trim());
 
-
-                //looking for the colors we already have in the garage:
-                Dictionary<string, List<Vehicle>> resultDictionary = (from sample in VehicleList group sample by sample.Color).ToDictionary(g => g.Key, g => g.ToList());
-                keyExistsForColor = resultDictionary.Keys.Any(k => string.Equals(k, color, StringComparison.InvariantCultureIgnoreCase));
+                //looking for the colors we already have in the garage:               
+                Dictionary<string, List<IVehicle>> resultDictionary = (from sample in Handler.VehicleList group sample by sample.Color).ToDictionary(g => g.Key, g => g.ToList());
+                keyExistsForColor = resultDictionary.Keys.Any(k => string.Equals(k, color, StringComparison.InvariantCultureIgnoreCase));  
 
                 if (emptyColorInput)
                     Console.WriteLine("Type cannot be empty!");
                 else if (!keyExistsForColor && !(color == "c" || color == "C"))
-                    Console.WriteLine("There is no this color in the garage.");
+                    Console.WriteLine($"There is no {color} color in the garage.");
             }
             while (emptyColorInput || (!keyExistsForColor && color != "c" && color != "C"));
             return color;
-        }   //******************************************************************
+        }   
 
-        public int SearchedWheels()
+
+        public string SearchedWheels()
         {
+            string input;
             string wheelsString;
             bool emptyWheelInput;
-            int wheelsInt;
-            bool validWheelNumber;
 
-            //looking for the number of wheels we already have in the garage:
-            Dictionary<int, List<Vehicle>> resultDictionaryForWheels = (from sample in VehicleList group sample by sample.NumberOfWheels).ToDictionary(g => g.Key, g => g.ToList());
+            int wheelsInt;
+            bool validIntWheelNumber;
+
+            string patternWheel = @"[^0-9wW]";  
+            bool validWheelToGetAllWheel;                                           
+
+            //looking for the number of wheels we already have in the garage:           
+            Dictionary<int, List<IVehicle>> resultDictionaryForWheels = (from sample in Handler.VehicleList group sample by sample.NumberOfWheels).ToDictionary(g => g.Key, g => g.ToList());
             bool keyExists;
 
-            do
-            {
-                Console.WriteLine("Write the number of wheels, or enter 0:");
-                wheelsString = Console.ReadLine();
+            do      
+            {               
+                Console.WriteLine("Write the number of wheels, or for all wheels: enter w or W:");
+                input = Console.ReadLine();
+                wheelsString = input.Trim();
+
+                //if input is empty:
                 emptyWheelInput = string.IsNullOrEmpty(wheelsString.Trim());
-                validWheelNumber = int.TryParse(wheelsString, out wheelsInt);
+                // if the specific wheel number is in the register:
+                validIntWheelNumber = int.TryParse(wheelsString, out wheelsInt);
+                // for all wheel number:
+                validWheelToGetAllWheel = Regex.IsMatch(wheelsString, patternWheel);  
+
+                //looking for wheel number in the garage:
                 keyExists = resultDictionaryForWheels.Keys.OfType<int>().Any(k => int.Equals(k, wheelsInt));
 
                 if (emptyWheelInput)
                     Console.WriteLine("Input cannot be empty!");
 
-                else if (!validWheelNumber)
-                    Console.WriteLine("Write a correct input. Use number.");
+                else if(validIntWheelNumber && wheelsInt < 0)
+                    Console.WriteLine("Only positive number allowed.");
 
-                else if (!keyExists)
+                else if (!keyExists && validIntWheelNumber)
                     Console.WriteLine($"There is no vehicle with {wheelsInt} wheels in the garage.");
 
-            } while (emptyWheelInput || !validWheelNumber || !(keyExists || wheelsString == "0"));
-            return wheelsInt;
+                else if (validWheelToGetAllWheel)                                                         
+                    Console.WriteLine("Write a correct input. Use number, for all wheel use w or W.");       
 
-        }  //******************************************************************
-
-
-
-
-
+                } while (emptyWheelInput || validWheelToGetAllWheel || (validIntWheelNumber && wheelsInt < 0) || (!keyExists && validIntWheelNumber));             
+         
+            return wheelsString;
+        }
 
 
+        private void SearcVehicleshByType()
+        {          
+            string secondInputToType;
+            do
+            {
+                Console.WriteLine("Choose second parameter: 1: color, 2: number of wheels");
+                IUI ui = new UI();
+                IHandler h = new Handler();
+                secondInputToType = ui.CorrectInput();
+
+                if (secondInputToType == "1") // color
+                {     
+                    Console.WriteLine(" \nVehicles: ");
+                    foreach (var item in h.ListtypeAndColorAndWheel())                    
+                        Console.WriteLine(item);                    
+                }
+                else if (secondInputToType == "2") //wheel
+                {                   
+                    Console.WriteLine(" \nVehicles: ");
+                    foreach (var item in h.ListtypeAndWheelAndColor())                    
+                        Console.WriteLine(item);                    
+                }
+                else Console.WriteLine("Wrong input.");
+            } while (secondInputToType != "1" && secondInputToType != "2");
+        }
 
 
+        private void SearcVehicleshByColor()
+        {          
+            string secondInputToColor;
+            do
+            {
+                Console.WriteLine("Choose second parameter: 1: type, 2: number of wheels");
+                IUI ui = new UI();
+                IHandler h = new Handler();
+                secondInputToColor = ui.CorrectInput();
+                if (secondInputToColor == "1") //type
+                {                
+                    Console.WriteLine(" \nVehicles: ");
+                    foreach (var item in h.ListcolorAndTypeAndWheels())                   
+                        Console.WriteLine(item);                    
+                }
+                else if (secondInputToColor == "2") //wheel
+                {                    
+                    Console.WriteLine(" \nVehicles: ");
+                    foreach (var item in h.ListcolorAndWheelAndType())                   
+                        Console.WriteLine(item);                    
+                }
+                else Console.WriteLine("Wrong input.");
+            } while (secondInputToColor != "1" && secondInputToColor != "2");
+        }
 
 
+        private void SearcVehicleshByWheels()
+        {         
+            string secondInputToWheel;
+            do
+            {
+                Console.WriteLine("Choose second parameter: 1: type, 2: color");
+                IUI ui = new UI();
+                IHandler h = new Handler();
+                secondInputToWheel = ui.CorrectInput();
+                if (secondInputToWheel == "1") //type
+                {
+                    Console.WriteLine(" \nVehicles: ");
+                    foreach (var item in h.ListwheelAndTypeAndColor())                   
+                        Console.WriteLine(item);                    
+                }
+                else if (secondInputToWheel == "2") //color
+                {
+                    Console.WriteLine(" \nVehicles: ");
+                    foreach (var item in h.ListwheelAndColorAndType())                 
+                        Console.WriteLine(item);                   
+                }
+                else Console.WriteLine("Wrong input.");
+            } while (secondInputToWheel != "1" && secondInputToWheel != "2");
+        }
 
-
-
-        /// //////////////////////////////////////////////////////////////////////////ebbol statikot csinalok UI-ban, amit HANDLERben is hasznalok.
 
         public string CorrectInput() {
 
@@ -763,15 +714,10 @@ namespace Ovning5
                     Console.WriteLine("Input has to be bigger than zero.");
             }
             while (emptyInput || !validInput || (inputInt <= 0));
-
             return inputString;
-        }     //******************************************************************
+        }
 
-    
     }
-
-
-
 }
 
 

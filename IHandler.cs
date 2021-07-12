@@ -1,35 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ovning5
 {
     public interface IHandler
     {
+        bool CheckCapacityInTheGarageSendingToUI();
+        IVehicle[] MakeTheListToArray();       
 
-        //  int GiveCapacityToGarageFromUI() => throw new NotImplementedException();
-
-
-        /* STATICBOL SIMAT CSINALTMA A HANDLERBEN  mukodik 07.08.17:32
-        static Vehicle[] MakeTheListToArray();
-        */
-
-
-        Vehicle[] MakeTheListToArray();
-
-        void ListTheVehiclesInTheGarage();
-
-        void FindTheCarToSendOutFromTheGarage(Garage<Vehicle> MyVehiclesInGarage);
-
-        void FindVehicleWithRegNUmber(Garage<Vehicle> MyVehiclesInGarage);
-
-        void FindVehicleTypes(Garage<Vehicle> MyVehiclesInGarage);
-
-
-        void SearcVehicleshByType();
-        void SearcVehicleshByColor();
-        void SearcVehicleshByWheels();
-
+        void ListTheVehiclesInTheGarage();   
+    
       
+        List<IVehicle> FindTheCarToSendOutFromTheGarage(Garage<IVehicle> MyVehiclesInGarage);
 
+        void FindVehicleWithRegNUmber(Garage<IVehicle> MyVehiclesInGarage);
+
+        void FindVehicleTypes(Garage<IVehicle> MyVehiclesInGarage);
+
+
+
+        List<IVehicle> ListtypeAndColorAndWheel();
+        List<IVehicle> ListtypeAndWheelAndColor();
+        List<IVehicle> ListcolorAndTypeAndWheels();
+        List<IVehicle> ListcolorAndWheelAndType();
+        List<IVehicle> ListwheelAndTypeAndColor();
+        List<IVehicle> ListwheelAndColorAndType();            
 
     }
 }
